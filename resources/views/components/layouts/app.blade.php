@@ -38,6 +38,9 @@
         {{ $slot }}
     </main>
 
+    <!-- Post-it notes toujours visible -->
+    @livewire('post-it-notes')
+
     @livewireScripts
 </body>
 </html>
