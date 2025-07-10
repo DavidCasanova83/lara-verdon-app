@@ -18,6 +18,13 @@ Route::get('/statistiques-avancees', function() {
     return view('pages.advanced-statistics');
 })->name('advanced-statistics');
 
+// Routes protégées pour les statistiques par ville
+Route::middleware(['auth'])->group(function () {
+    Route::get('/stats-ville/{city}', function($city) {
+        return view('pages.city-statistics', ['citySlug' => $city]);
+    })->name('city-stats');
+});
+
 // Original Laravel routes
 Route::view('dashboard', 'dashboard')
     ->middleware(['auth', 'verified'])

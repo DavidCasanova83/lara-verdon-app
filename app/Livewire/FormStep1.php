@@ -42,38 +42,56 @@ class FormStep1 extends Component
 
     public function nextStep()
     {
-        $formOptionsService = app(FormOptionsService::class);
-        $validDepartments = $formOptionsService->getDepartments();
-        
-        $this->validate([
-            'email' => 'nullable|email',
-            'country' => 'required',
-            'department' => [
-                'required_if:country,France',
-                'required_unless:departmentUnknown,true',
-                'in:' . implode(',', $validDepartments)
-            ]
-        ], [
-            'email.email' => 'Veuillez entrer une adresse email valide.',
-            'country.required' => 'Veuillez sélectionner un pays.',
-            'department.required_if' => 'Veuillez sélectionner un département.',
-            'department.required_unless' => 'Veuillez sélectionner un département.',
-            'department.in' => 'Veuillez sélectionner un département valide.'
+        \Log::info('FormStep1::nextStep called', [
+            'country' => $this->country,
+            'department' => $this->department,
+            'departmentUnknown' => $this->departmentUnknown,
+            'email' => $this->email
         ]);
 
-        // Sauvegarder en session
-        session(['form_data' => [
-            'city' => $this->city,
-            'country' => $this->country === 'Autre' ? $this->otherCountry : $this->country,
-            'other_country' => $this->otherCountry,
-            'department' => $this->departmentUnknown ? 'Inconnu' : $this->department,
-            'department_unknown' => $this->departmentUnknown,
-            'email' => $this->email,
-            'consent_newsletter' => $this->consentNewsletter,
-            'consent_data_processing' => $this->consentDataProcessing
-        ]]);
+        try {
+            // Validation simplifiée
+            $rules = [
+                'email' => 'nullable|email',
+                'country' => 'required',
+            ];
 
-        return redirect()->route('form.step2', $this->city);
+            $messages = [
+                'email.email' => 'Veuillez entrer une adresse email valide.',
+                'country.required' => 'Veuillez sélectionner un pays.',
+            ];
+
+            // Validation département seulement si France ET pas inconnu
+            if ($this->country === 'France' && !$this->departmentUnknown) {
+                $formOptionsService = app(FormOptionsService::class);
+                $validDepartments = $formOptionsService->getDepartments();
+                
+                $rules['department'] = 'required|in:' . implode(',', $validDepartments);
+                $messages['department.required'] = 'Veuillez sélectionner un département.';
+                $messages['department.in'] = 'Veuillez sélectionner un département valide.';
+            }
+
+            $this->validate($rules, $messages);
+
+            // Sauvegarder en session
+            session(['form_data' => [
+                'city' => $this->city,
+                'country' => $this->country === 'Autre' ? $this->otherCountry : $this->country,
+                'other_country' => $this->otherCountry,
+                'department' => $this->departmentUnknown ? 'Inconnu' : $this->department,
+                'department_unknown' => $this->departmentUnknown,
+                'email' => $this->email,
+                'consent_newsletter' => $this->consentNewsletter,
+                'consent_data_processing' => $this->consentDataProcessing
+            ]]);
+
+            \Log::info('FormStep1: Validation passed, redirecting to step2');
+            return redirect()->route('form.step2', $this->city);
+            
+        } catch (\Exception $e) {
+            \Log::error('FormStep1 Error: ' . $e->getMessage());
+            session()->flash('error', 'Erreur: ' . $e->getMessage());
+        }
     }
 
     public function render()

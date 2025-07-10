@@ -8,10 +8,9 @@
         </p>
 
         <div class="grid grid-cols-1 md:grid-cols-3 gap-6 place-items-center w-fit mx-auto">
-            @foreach($cities as $city)
-                <a href="{{ route('form.step1', $city->slug) }}"
-                   class="city-card"
-                   style="background-image: linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.4)), url('https://picsum.photos/300/300?random={{ $loop->index }}')">
+            @foreach ($cities as $city)
+                <a href="{{ route('form.step1', $city->slug) }}" class="city-card"
+                    style="background-image: linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.4)), url('https://picsum.photos/300/300?random={{ $loop->index }}')">
 
                     <div class="city-card-overlay"></div>
                     <h2 class="city-card-content">{{ $city->name }}</h2>
@@ -20,11 +19,8 @@
         </div>
 
         <div class="text-center mt-8 space-x-4">
-            <a href="{{ route('statistics') }}" class="text-primary-600 hover:text-primary-700 underline text-lg">
-                Voir les statistiques
-            </a>
-            <span class="text-gray-400">|</span>
-            <a href="{{ route('advanced-statistics') }}" class="text-green-600 hover:text-green-700 underline text-lg font-semibold">
+            <a href="{{ route('advanced-statistics') }}"
+                class="text-green-600 hover:text-green-700 text-lg font-semibold">
                 📊 Statistiques Avancées
             </a>
         </div>
