@@ -1,0 +1,19 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(php artisan make:model:*)",
+      "Bash(php artisan make:seeder:*)",
+      "Bash(php artisan migrate:*)",
+      "Bash(composer:*)",
+      "Bash(php artisan make:livewire:*)",
+      "Bash(php artisan make:controller:*)",
+      "Bash(mkdir:*)",
+      "Bash(npm run build:*)",
+      "Bash(pkill:*)",
+      "Bash(php artisan:*)",
+      "Bash(php:*)",
+      "Bash(rm:*)"
+    ],
+    "deny": []
+  }
+}

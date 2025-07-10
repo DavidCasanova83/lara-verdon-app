@@ -1,0 +1,143 @@
+@import 'tailwindcss';
+@import '../../vendor/livewire/flux/dist/flux.css';
+
+@source '../views';
+@source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
+@source '../../vendor/livewire/flux-pro/stubs/**/*.blade.php';
+@source '../../vendor/livewire/flux/stubs/**/*.blade.php';
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+@theme {
+    --font-sans: 'Atkinson', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
+
+    /* Primary Colors - Blue/Teal from Verdon Tourisme */
+    --color-primary-50: #f0f9ff;
+    --color-primary-500: #189187;
+    --color-primary-600: #0F5F5C;
+    --color-primary-700: #0c4a6e;
+
+    /* Secondary Colors - Green */
+    --color-secondary-500: #2CA08B;
+    --color-secondary-600: #74C69D;
+
+    /* Accent Colors - Orange */
+    --color-accent-500: #F4A261;
+    --color-accent-600: #E76F51;
+
+    /* Zinc colors for general UI */
+    --color-zinc-50: #fafafa;
+    --color-zinc-100: #f5f5f5;
+    --color-zinc-200: #e5e5e5;
+    --color-zinc-300: #d4d4d4;
+    --color-zinc-400: #a3a3a3;
+    --color-zinc-500: #737373;
+    --color-zinc-600: #525252;
+    --color-zinc-700: #404040;
+    --color-zinc-800: #262626;
+    --color-zinc-900: #171717;
+    --color-zinc-950: #0a0a0a;
+
+    --color-accent: var(--color-primary-600);
+    --color-accent-content: var(--color-primary-600);
+    --color-accent-foreground: var(--color-white);
+}
+
+@layer theme {
+    .dark {
+        --color-accent: var(--color-white);
+        --color-accent-content: var(--color-white);
+        --color-accent-foreground: var(--color-neutral-800);
+    }
+}
+
+@layer base {
+    @font-face {
+        font-family: "Atkinson";
+        src: url("/fonts/atkinson-regular.woff") format("woff");
+        font-weight: 400;
+        font-style: normal;
+        font-display: swap;
+    }
+
+    @font-face {
+        font-family: "Atkinson";
+        src: url("/fonts/atkinson-bold.woff") format("woff");
+        font-weight: 700;
+        font-style: normal;
+        font-display: swap;
+    }
+
+    body {
+        font-family: "Atkinson", sans-serif;
+        font-size: 20px;
+        line-height: 1.7;
+    }
+
+    *,
+    ::after,
+    ::before,
+    ::backdrop,
+    ::file-selector-button {
+        border-color: var(--color-gray-200, currentColor);
+    }
+}
+
+/* Tourist Form Specific Styles */
+@layer components {
+    /* Styles pour les boutons de sélection */
+    .selection-button {
+        @apply px-4 py-2 rounded transition-all duration-200 border;
+    }
+
+    .selection-button.selected {
+        @apply bg-blue-500 text-white shadow-lg border-blue-600;
+    }
+
+    .selection-button:not(.selected) {
+        @apply bg-gray-200 text-black hover:bg-gray-300 border-gray-300;
+    }
+
+    /* Styles pour les cartes de villes */
+    .city-card {
+        @apply min-w-[250px] min-h-[250px] bg-cover bg-center relative shadow-lg 
+               hover:shadow-xl transition-all duration-300 flex flex-col justify-between 
+               items-center text-center border border-gray-200 p-4 hover:border-emerald-600
+               rounded-lg;
+    }
+
+    .city-card-overlay {
+        @apply absolute inset-0 bg-black/50 rounded-lg;
+    }
+
+    .city-card-content {
+        @apply text-lg font-semibold text-white relative z-10 text-nowrap;
+    }
+
+    /* Form step animations */
+    .form-step-enter {
+        opacity: 0;
+        transform: translateX(20px);
+    }
+
+    .form-step-enter-active {
+        opacity: 1;
+        transform: translateX(0);
+        transition: all 0.3s ease-out;
+    }
+}
+
+/* Flux form styling overrides */
+[data-flux-field]:not(ui-radio, ui-checkbox) {
+    @apply grid gap-2;
+}
+
+[data-flux-label] {
+    @apply  !mb-0 !leading-tight;
+}
+
+input:focus[data-flux-control],
+textarea:focus[data-flux-control],
+select:focus[data-flux-control] {
+    @apply outline-hidden ring-2 ring-accent ring-offset-2 ring-offset-accent-foreground;
+}
