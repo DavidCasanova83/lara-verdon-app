@@ -47,7 +47,6 @@ class FormStep1 extends Component
         
         $this->validate([
             'email' => 'nullable|email',
-            'consentDataProcessing' => 'required|accepted',
             'country' => 'required',
             'department' => [
                 'required_if:country,France',
@@ -56,8 +55,6 @@ class FormStep1 extends Component
             ]
         ], [
             'email.email' => 'Veuillez entrer une adresse email valide.',
-            'consentDataProcessing.required' => 'Vous devez accepter le traitement des données.',
-            'consentDataProcessing.accepted' => 'Vous devez accepter le traitement des données.',
             'country.required' => 'Veuillez sélectionner un pays.',
             'department.required_if' => 'Veuillez sélectionner un département.',
             'department.required_unless' => 'Veuillez sélectionner un département.',

@@ -141,3 +141,19 @@ textarea:focus[data-flux-control],
 select:focus[data-flux-control] {
     @apply outline-hidden ring-2 ring-accent ring-offset-2 ring-offset-accent-foreground;
 }
+
+/* Post-it Notes Styles */
+@layer components {
+    .post-it-shadow {
+        box-shadow: 
+            3px 3px 10px rgba(0,0,0,0.2),
+            0 0 0 1px rgba(0,0,0,0.05);
+    }
+    
+    .post-it-texture {
+        background-image: 
+            linear-gradient(90deg, rgba(255,255,255,0.1) 50%, transparent 50%),
+            linear-gradient(rgba(255,255,255,0.1) 50%, transparent 50%);
+        background-size: 20px 20px;
+    }
+}
