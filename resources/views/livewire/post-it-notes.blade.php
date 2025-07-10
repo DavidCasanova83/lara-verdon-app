@@ -84,7 +84,6 @@ function postItNotes() {
             this.notes = localStorage.getItem('postit_notes') || '';
             this.minimized = localStorage.getItem('postit_minimized') === 'true';
             
-            
             // Auto-resize initial du textarea
             this.$nextTick(() => {
                 const textarea = this.$el.querySelector('textarea');
@@ -107,7 +106,6 @@ function postItNotes() {
             localStorage.setItem('postit_minimized', this.minimized);
         },
         
-        
         clearNotes() {
             if (confirm('🗑️ Êtes-vous sûr de vouloir effacer toutes vos notes ?\n\nCette action est irréversible.')) {
                 this.notes = '';
@@ -129,8 +127,7 @@ function postItNotes() {
             // Calculate new height based on content
             const newHeight = Math.min(Math.max(textarea.scrollHeight, 120), 300);
             textarea.style.height = newHeight + 'px';
-        },
-        
+        }
     }
 }
 

@@ -19,9 +19,13 @@
             @endforeach
         </div>
 
-        <div class="text-center mt-8">
+        <div class="text-center mt-8 space-x-4">
             <a href="{{ route('statistics') }}" class="text-primary-600 hover:text-primary-700 underline text-lg">
                 Voir les statistiques
+            </a>
+            <span class="text-gray-400">|</span>
+            <a href="{{ route('advanced-statistics') }}" class="text-green-600 hover:text-green-700 underline text-lg font-semibold">
+                📊 Statistiques Avancées
             </a>
         </div>
     </div>

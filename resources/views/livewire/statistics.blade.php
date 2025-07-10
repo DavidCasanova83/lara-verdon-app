@@ -52,14 +52,14 @@
     <script>
         document.addEventListener('DOMContentLoaded', function () {
             // Données des graphiques
-            const chartData = @json([
-                'cities' => $citiesData,
-                'profiles' => $profilesData,
-                'departments' => $departmentsData,
-                'ageGroups' => $ageGroupsData,
-                'specificRequests' => $specificRequestsData,
-                'generalRequests' => $generalRequestsData
-            ]);
+            const chartData = {
+                cities: @json($citiesData),
+                profiles: @json($profilesData),
+                departments: @json($departmentsData),
+                ageGroups: @json($ageGroupsData),
+                specificRequests: @json($specificRequestsData),
+                generalRequests: @json($generalRequestsData)
+            };
 
             // Couleurs pour les graphiques
             const colors = ['#189187', '#0F5F5C', '#2CA08B', '#74C69D', '#F4A261', '#E76F51'];
