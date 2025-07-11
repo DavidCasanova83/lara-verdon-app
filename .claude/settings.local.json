@@ -15,7 +15,8 @@
       "Bash(rm:*)",
       "Bash(true)",
       "Bash(chmod:*)",
-      "WebFetch(domain:images.unsplash.com)"
+      "WebFetch(domain:images.unsplash.com)",
+      "Bash(find:*)"
     ],
     "deny": []
   }

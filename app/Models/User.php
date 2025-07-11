@@ -22,6 +22,7 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'role',
     ];
 
     /**
@@ -57,5 +58,21 @@ class User extends Authenticatable
             ->take(2)
             ->map(fn ($word) => Str::substr($word, 0, 1))
             ->implode('');
+    }
+
+    /**
+     * Check if user is super admin
+     */
+    public function isSuperAdmin(): bool
+    {
+        return $this->role === 'super-admin';
+    }
+
+    /**
+     * Check if user is admin or super admin
+     */
+    public function isAdmin(): bool
+    {
+        return in_array($this->role, ['admin', 'super-admin']);
     }
 }
