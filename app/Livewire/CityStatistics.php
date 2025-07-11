@@ -3,6 +3,7 @@
 namespace App\Livewire;
 
 use Livewire\Component;
+use Livewire\WithPagination;
 use App\Models\FormSubmission;
 use App\Models\City;
 use Illuminate\Support\Facades\DB;
@@ -10,6 +11,8 @@ use Carbon\Carbon;
 
 class CityStatistics extends Component
 {
+    use WithPagination;
+    
     public $citySlug;
     public $city;
     
@@ -19,6 +22,25 @@ class CityStatistics extends Component
     public $selectedCountry = '';
     public $selectedDepartment = '';
     public $selectedAgeGroup = '';
+    
+    // Tri
+    public $sortBy = 'created_at';
+    public $sortDirection = 'desc';
+    
+    // Recherche
+    public $search = '';
+    
+    // Pagination
+    public $perPage = 20;
+    
+    protected $queryString = [
+        'search' => ['except' => ''],
+        'sortBy' => ['except' => 'created_at'],
+        'sortDirection' => ['except' => 'desc'],
+        'selectedCountry' => ['except' => ''],
+        'selectedDepartment' => ['except' => ''],
+        'perPage' => ['except' => 20],
+    ];
 
     public function mount($citySlug)
     {
@@ -88,106 +110,131 @@ class CityStatistics extends Component
         $this->selectedAgeGroup = '';
         $this->dateFrom = Carbon::now()->subMonths(3)->format('Y-m-d');
         $this->dateTo = Carbon::now()->format('Y-m-d');
+        $this->search = '';
+        $this->resetPage();
     }
 
-    private function getFilteredSubmissions()
+    public function updatedSearch()
     {
+        $this->resetPage();
+    }
+
+    public function updatedSelectedCountry()
+    {
+        $this->resetPage();
+    }
+
+    public function updatedSelectedDepartment()
+    {
+        $this->resetPage();
+    }
+
+    public function updatedDateFrom()
+    {
+        $this->resetPage();
+    }
+
+    public function updatedDateTo()
+    {
+        $this->resetPage();
+    }
+
+    public function updatedPerPage()
+    {
+        $this->resetPage();
+    }
+
+    public function sortBy($field)
+    {
+        if ($this->sortBy === $field) {
+            $this->sortDirection = $this->sortDirection === 'asc' ? 'desc' : 'asc';
+        } else {
+            $this->sortBy = $field;
+            $this->sortDirection = 'asc';
+        }
+        $this->resetPage();
+    }
+
+
+    public function render()
+    {
+        // Requête optimisée avec pagination et filtres
         $query = FormSubmission::where('city', $this->citySlug);
 
-        // Filtres de date
+        // Appliquer les filtres
         if ($this->dateFrom) {
             $query->whereDate('created_at', '>=', $this->dateFrom);
         }
         if ($this->dateTo) {
             $query->whereDate('created_at', '<=', $this->dateTo);
         }
-
-        // Filtres par champs
         if ($this->selectedCountry) {
             $query->where('country', $this->selectedCountry);
         }
         if ($this->selectedDepartment) {
             $query->where('department', $this->selectedDepartment);
         }
-
-        return $query->orderBy('created_at', 'desc')->get();
-    }
-
-    public function render()
-    {
-        $submissions = $this->getFilteredSubmissions();
-        
-        // Statistiques générales
-        $totalCount = $submissions->count();
-        $totalToday = $submissions->where('created_at', '>=', Carbon::today())->count();
-        $totalThisWeek = $submissions->where('created_at', '>=', Carbon::now()->startOfWeek())->count();
-        $totalThisMonth = $submissions->where('created_at', '>=', Carbon::now()->startOfMonth())->count();
-
-        // Données pour graphiques
-        $countriesData = $submissions->groupBy('country')
-            ->map->count()
-            ->sortDesc()
-            ->take(8);
-
-        $departmentsData = $submissions->where('country', 'France')
-            ->groupBy('department')
-            ->map->count()
-            ->sortDesc()
-            ->take(8);
-
-        // Évolution temporelle (30 derniers jours)
-        $trendsData = collect();
-        for ($i = 29; $i >= 0; $i--) {
-            $date = Carbon::now()->subDays($i);
-            $count = $submissions->where('created_at', '>=', $date->startOfDay())
-                               ->where('created_at', '<=', $date->endOfDay())
-                               ->count();
-            $trendsData->put($date->format('d/m'), $count);
+        if ($this->search) {
+            $query->where(function ($q) {
+                $q->where('email', 'like', '%' . $this->search . '%')
+                  ->orWhere('country', 'like', '%' . $this->search . '%')
+                  ->orWhere('department', 'like', '%' . $this->search . '%')
+                  ->orWhere('profile', 'like', '%' . $this->search . '%')
+                  ->orWhere('other_request', 'like', '%' . $this->search . '%');
+            });
         }
 
-        // Groupes d'âge
-        $ageGroupsData = collect();
-        foreach ($submissions as $submission) {
-            if ($submission->age_groups) {
-                foreach ($submission->age_groups as $ageGroup) {
-                    $ageGroupsData->put($ageGroup, ($ageGroupsData->get($ageGroup, 0) + 1));
-                }
-            }
-        }
-        $ageGroupsData = $ageGroupsData->sortDesc();
+        // Appliquer le tri
+        $query->orderBy($this->sortBy, $this->sortDirection);
 
-        // Demandes spécifiques les plus populaires
-        $specificRequestsData = collect();
-        foreach ($submissions as $submission) {
-            if ($submission->specific_requests) {
-                foreach ($submission->specific_requests as $request) {
-                    $specificRequestsData->put($request, ($specificRequestsData->get($request, 0) + 1));
-                }
-            }
-        }
-        $specificRequestsData = $specificRequestsData->sortDesc()->take(6);
+        // Pagination
+        $submissions = $query->paginate($this->perPage);
 
-        // Profils visiteurs (newsletter vs non-newsletter)
-        $profilesData = [
-            'Abonnés newsletter' => $submissions->where('consent_newsletter', true)->count(),
-            'Non abonnés' => $submissions->where('consent_newsletter', false)->count(),
-        ];
+        // Statistiques générales (requêtes séparées optimisées)
+        $totalCount = FormSubmission::where('city', $this->citySlug)->count();
+        $totalToday = FormSubmission::where('city', $this->citySlug)
+            ->whereDate('created_at', Carbon::today())
+            ->count();
+        $totalThisWeek = FormSubmission::where('city', $this->citySlug)
+            ->whereBetween('created_at', [
+                Carbon::now()->startOfWeek(),
+                Carbon::now()->endOfWeek()
+            ])
+            ->count();
+        $totalThisMonth = FormSubmission::where('city', $this->citySlug)
+            ->whereBetween('created_at', [
+                Carbon::now()->startOfMonth(),
+                Carbon::now()->endOfMonth()
+            ])
+            ->count();
 
-        // Options pour les filtres
-        $availableCountries = $submissions->pluck('country')->unique()->sort()->values();
-        $availableDepartments = $submissions->where('country', 'France')
-            ->pluck('department')->unique()->sort()->values();
-
-        // Stats hebdomadaires pour comparaison
+        // Calculer la croissance hebdomadaire
         $lastWeekCount = FormSubmission::where('city', $this->citySlug)
             ->whereBetween('created_at', [
                 Carbon::now()->subWeeks(2)->startOfWeek(),
                 Carbon::now()->subWeek()->endOfWeek()
-            ])->count();
+            ])
+            ->count();
         
         $weeklyGrowth = $lastWeekCount > 0 ? 
             round((($totalThisWeek - $lastWeekCount) / $lastWeekCount) * 100, 1) : 
             ($totalThisWeek > 0 ? 100 : 0);
+
+        // Options pour les filtres (optimisées)
+        $availableCountries = FormSubmission::where('city', $this->citySlug)
+            ->distinct()
+            ->pluck('country')
+            ->filter()
+            ->sort()
+            ->values();
+            
+        $availableDepartments = FormSubmission::where('city', $this->citySlug)
+            ->where('country', 'France')
+            ->distinct()
+            ->pluck('department')
+            ->filter()
+            ->sort()
+            ->values();
 
         return view('livewire.city-statistics', [
             'totalCount' => $totalCount,
@@ -195,15 +242,9 @@ class CityStatistics extends Component
             'totalThisWeek' => $totalThisWeek,
             'totalThisMonth' => $totalThisMonth,
             'weeklyGrowth' => $weeklyGrowth,
-            'countriesData' => $countriesData,
-            'departmentsData' => $departmentsData,
-            'trendsData' => $trendsData,
-            'ageGroupsData' => $ageGroupsData,
-            'specificRequestsData' => $specificRequestsData,
-            'profilesData' => $profilesData,
             'availableCountries' => $availableCountries,
             'availableDepartments' => $availableDepartments,
-            'submissions' => $submissions->take(100) // Plus de données pour une ville
+            'submissions' => $submissions
         ]);
     }
 }
