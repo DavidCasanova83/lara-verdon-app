@@ -257,8 +257,15 @@ function advancedStats() {
         charts: {},
 
         init() {
-            this.$nextTick(() => {
-                this.initializeCharts();
+            this.$nextTick(async () => {
+                await this.initializeCharts();
+            });
+            
+            // Écouter les événements Livewire pour recharger les graphiques
+            this.$wire.on('refresh-charts', () => {
+                setTimeout(async () => {
+                    await this.refreshCharts();
+                }, 100);
             });
         },
 
@@ -271,21 +278,21 @@ function advancedStats() {
             this.showRequests = newState;
         },
 
-        refreshCharts() {
-            this.$nextTick(() => {
+        async refreshCharts() {
+            this.$nextTick(async () => {
                 Object.values(this.charts).forEach(chart => {
                     if (chart && typeof chart.destroy === 'function') {
                         chart.destroy();
                     }
                 });
                 this.charts = {};
-                setTimeout(() => {
-                    this.initializeCharts();
-                }, 100);
+                setTimeout(async () => {
+                    await this.initializeCharts();
+                }, 200);
             });
         },
 
-        initializeCharts() {
+        async initializeCharts() {
             // Vérifier que les éléments canvas existent
             const canvases = ['trendsChart', 'citiesChart', 'countriesChart', 'ageGroupsChart', 'requestsChart', 'departmentsChart'];
             const existingCanvases = canvases.filter(id => document.getElementById(id));
@@ -294,14 +301,8 @@ function advancedStats() {
                 return; // Aucun canvas disponible
             }
 
-            const chartData = {
-                cities: @json($citiesData),
-                countries: @json($countriesData),
-                departments: @json($departmentsData),
-                trends: @json($trendsData),
-                ageGroups: @json($ageGroupsData),
-                specificRequests: @json($specificRequestsData)
-            };
+            // Récupérer les données filtrées depuis le composant Livewire
+            const chartData = await this.$wire.get('chartData');
 
             const colors = ['#3B82F6', '#10B981', '#F59E0B', '#EF4444', '#8B5CF6', '#06B6D4', '#F97316', '#84CC16'];
             
@@ -318,10 +319,10 @@ function advancedStats() {
                 this.charts.trends = new Chart(document.getElementById('trendsChart'), {
                     type: 'line',
                     data: {
-                        labels: Object.keys(chartData.trends),
+                        labels: Object.keys(chartData.trends || {}),
                         datasets: [{
                             label: 'Visiteurs',
-                            data: Object.values(chartData.trends),
+                            data: Object.values(chartData.trends || {}),
                             borderColor: colors[0],
                             backgroundColor: colors[0] + '20',
                             tension: 0.4,
@@ -341,9 +342,9 @@ function advancedStats() {
                 this.charts.cities = new Chart(document.getElementById('citiesChart'), {
                     type: 'doughnut',
                     data: {
-                        labels: Object.keys(chartData.cities).map(city => city.charAt(0).toUpperCase() + city.slice(1)),
+                        labels: Object.keys(chartData.cities || {}).map(city => city.charAt(0).toUpperCase() + city.slice(1)),
                         datasets: [{
-                            data: Object.values(chartData.cities),
+                            data: Object.values(chartData.cities || {}),
                             backgroundColor: colors
                         }]
                     },
@@ -358,9 +359,9 @@ function advancedStats() {
                 this.charts.countries = new Chart(document.getElementById('countriesChart'), {
                     type: 'bar',
                     data: {
-                        labels: Object.keys(chartData.countries),
+                        labels: Object.keys(chartData.countries || {}),
                         datasets: [{
-                            data: Object.values(chartData.countries),
+                            data: Object.values(chartData.countries || {}),
                             backgroundColor: colors[1],
                             borderColor: colors[1],
                             borderWidth: 1
@@ -379,9 +380,9 @@ function advancedStats() {
                 this.charts.ageGroups = new Chart(document.getElementById('ageGroupsChart'), {
                     type: 'polarArea',
                     data: {
-                        labels: Object.keys(chartData.ageGroups),
+                        labels: Object.keys(chartData.ageGroups || {}),
                         datasets: [{
-                            data: Object.values(chartData.ageGroups),
+                            data: Object.values(chartData.ageGroups || {}),
                             backgroundColor: colors
                         }]
                     },
@@ -396,9 +397,9 @@ function advancedStats() {
                 this.charts.requests = new Chart(document.getElementById('requestsChart'), {
                     type: 'bar',
                     data: {
-                        labels: Object.keys(chartData.specificRequests),
+                        labels: Object.keys(chartData.specificRequests || {}),
                         datasets: [{
-                            data: Object.values(chartData.specificRequests),
+                            data: Object.values(chartData.specificRequests || {}),
                             backgroundColor: colors[4],
                             borderColor: colors[4],
                             borderWidth: 1
@@ -427,9 +428,9 @@ function advancedStats() {
                 this.charts.departments = new Chart(document.getElementById('departmentsChart'), {
                     type: 'bar',
                     data: {
-                        labels: Object.keys(chartData.departments),
+                        labels: Object.keys(chartData.departments || {}),
                         datasets: [{
-                            data: Object.values(chartData.departments),
+                            data: Object.values(chartData.departments || {}),
                             backgroundColor: colors[5],
                             borderColor: colors[5],
                             borderWidth: 1

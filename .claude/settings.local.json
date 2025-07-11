@@ -12,7 +12,9 @@
       "Bash(pkill:*)",
       "Bash(php artisan:*)",
       "Bash(php:*)",
-      "Bash(rm:*)"
+      "Bash(rm:*)",
+      "Bash(true)",
+      "Bash(chmod:*)"
     ],
     "deny": []
   }

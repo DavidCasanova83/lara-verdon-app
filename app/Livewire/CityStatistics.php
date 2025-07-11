@@ -20,6 +20,9 @@ class CityStatistics extends Component
     public $selectedDepartment = '';
     public $selectedAgeGroup = '';
 
+    // Données des graphiques (pour JavaScript)
+    public $chartData = [];
+
     public function mount($citySlug)
     {
         $this->citySlug = $citySlug;
@@ -88,6 +91,29 @@ class CityStatistics extends Component
         $this->selectedAgeGroup = '';
         $this->dateFrom = Carbon::now()->subMonths(3)->format('Y-m-d');
         $this->dateTo = Carbon::now()->format('Y-m-d');
+        
+        // Déclencher le rechargement des graphiques
+        $this->dispatch('refresh-charts');
+    }
+
+    public function updatedSelectedCountry()
+    {
+        $this->dispatch('refresh-charts');
+    }
+
+    public function updatedSelectedDepartment()
+    {
+        $this->dispatch('refresh-charts');
+    }
+
+    public function updatedDateFrom()
+    {
+        $this->dispatch('refresh-charts');
+    }
+
+    public function updatedDateTo()
+    {
+        $this->dispatch('refresh-charts');
     }
 
     private function getFilteredSubmissions()
@@ -188,6 +214,16 @@ class CityStatistics extends Component
         $weeklyGrowth = $lastWeekCount > 0 ? 
             round((($totalThisWeek - $lastWeekCount) / $lastWeekCount) * 100, 1) : 
             ($totalThisWeek > 0 ? 100 : 0);
+
+        // Préparer les données pour JavaScript
+        $this->chartData = [
+            'countries' => $countriesData->toArray(),
+            'departments' => $departmentsData->toArray(),
+            'trends' => $trendsData->toArray(),
+            'ageGroups' => $ageGroupsData->toArray(),
+            'specificRequests' => $specificRequestsData->toArray(),
+            'profiles' => $profilesData
+        ];
 
         return view('livewire.city-statistics', [
             'totalCount' => $totalCount,

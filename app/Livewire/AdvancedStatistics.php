@@ -25,6 +25,9 @@ class AdvancedStatistics extends Component
     public $showAgeGroups = true;
     public $showRequests = true;
 
+    // Données des graphiques (pour JavaScript)
+    public $chartData = [];
+
     public function mount()
     {
         // Par défaut : 3 derniers mois
@@ -91,6 +94,34 @@ class AdvancedStatistics extends Component
         $this->selectedAgeGroup = '';
         $this->dateFrom = Carbon::now()->subMonths(3)->format('Y-m-d');
         $this->dateTo = Carbon::now()->format('Y-m-d');
+        
+        // Déclencher le rechargement des graphiques
+        $this->dispatch('refresh-charts');
+    }
+
+    public function updatedSelectedCity()
+    {
+        $this->dispatch('refresh-charts');
+    }
+
+    public function updatedSelectedCountry()
+    {
+        $this->dispatch('refresh-charts');
+    }
+
+    public function updatedSelectedDepartment()
+    {
+        $this->dispatch('refresh-charts');
+    }
+
+    public function updatedDateFrom()
+    {
+        $this->dispatch('refresh-charts');
+    }
+
+    public function updatedDateTo()
+    {
+        $this->dispatch('refresh-charts');
     }
 
     private function getFilteredSubmissions()
@@ -189,6 +220,17 @@ class AdvancedStatistics extends Component
         $availableCountries = $submissions->pluck('country')->unique()->sort()->values();
         $availableDepartments = $submissions->where('country', 'France')
             ->pluck('department')->unique()->sort()->values();
+
+        // Préparer les données pour JavaScript
+        $this->chartData = [
+            'cities' => $citiesData->toArray(),
+            'countries' => $countriesData->toArray(),
+            'departments' => $departmentsData->toArray(),
+            'trends' => $trendsData->toArray(),
+            'ageGroups' => $ageGroupsData->toArray(),
+            'specificRequests' => $specificRequestsData->toArray(),
+            'profiles' => $profilesData
+        ];
 
         return view('livewire.advanced-statistics', [
             'totalCount' => $totalCount,
