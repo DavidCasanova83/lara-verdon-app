@@ -1678,5 +1678,90 @@ Ce système post-it démontre une **architecture équilibrée** entre simplicit�
 
 ---
 
+## 📋 Mise à jour - Nouvelles fonctionnalités développées
+
+### Système de formulaires multi-étapes
+L'application a été enrichie d'un système de formulaires touristiques en 3 étapes :
+
+#### FormStep1 - Informations géographiques
+- **Section optionnelle collapsible** : Informations utilisateur (email, consentements RGPD)
+- **Sélection pays** avec option "Autre" personnalisée
+- **Département France** avec toggle "Inconnu" (bug du décochage fixé)
+- **Animation confetti** sur succès de soumission
+- **Messages de succès** avec auto-masquage après 5 secondes
+
+#### FormStep2 - Sélection tranches d'âge
+- **Multi-sélection** des groupes d'âge
+- **Méthodes toggleAgeGroup()** pour manipulation sécurisée des arrays
+- **Validation** et feedback visuel
+
+#### FormStep3 - Demandes touristiques
+- **Demandes spécifiques** par ville/village
+- **Demandes générales** avec multi-sélection
+- **Zone texte libre** pour demandes personnalisées
+- **Récapitulatif** des sélections avant envoi
+- **Gestion JSON** sécurisée avec json_encode() (fix bug apostrophes)
+
+### Système d'images villages
+- **Images spécifiques** pour chaque village au lieu d'images aléatoires
+- **Dossier public/images/villages/** avec images optimisées 400x300px
+- **Correspondance slug-image** automatique
+- **Villages couverts** :
+  - La Palud-sur-Verdon : Paysage des Gorges du Verdon
+  - Saint-André-les-Alpes : Lac de montagne
+  - Colmars-les-Alpes : Village fortifié
+  - Entrevaux : Architecture médiévale
+  - Annot : Formations gréseuses
+
+### Améliorations UX/UI
+- **Composants réutilisables** :
+  - `progress-bar` : Indicateur de progression 3 étapes
+  - `selection-button` : Boutons de sélection avec accessibilité
+- **Système de couleurs** unifié #3B9C92 (thème teal)
+- **Animations Alpine.js** pour sections collapsibles
+- **Transitions fluides** avec x-transition
+- **Confetti personnalisé** en JavaScript vanilla (resources/js/confetti.js)
+
+### Corrections techniques
+- **Fix toggle département** : Remplacement `{{ !$departmentUnknown }}` par `$toggle('departmentUnknown')`
+- **Fix redirections Livewire** : `redirect()->route()` → `$this->redirectRoute()`
+- **Fix compilation Blade** : Simplification des expressions complexes dans wire:click
+- **Fix encodage JSON** : Utilisation correcte de json_encode() pour caractères spéciaux
+
+### Système de statistiques
+- **Statistiques par ville** avec visualisation
+- **Statistiques globales** avec tableaux de bord
+- **Tracking des connexions** et utilisation
+
+### Architecture mise à jour
+```
+resources/
+├── js/
+│   └── confetti.js                    # Système d'animation confetti
+├── css/
+│   └── app.css                       # Thème couleur #3B9C92
+├── views/
+│   ├── components/
+│   │   ├── progress-bar.blade.php    # Barre de progression
+│   │   └── selection-button.blade.php # Boutons de sélection
+│   ├── livewire/
+│   │   ├── form-step1.blade.php      # Étape 1 avec section collapsible
+│   │   ├── form-step2.blade.php      # Étape 2 sélection âges
+│   │   └── form-step3.blade.php      # Étape 3 demandes touristiques
+│   └── pages/
+│       └── home.blade.php            # Page d'accueil avec images villages
+public/
+└── images/
+    └── villages/                     # Images spécifiques par village
+        ├── la-palud-sur-verdon.jpg
+        ├── saint-andre-les-alpes.jpg
+        ├── colmars-les-alpes.jpg
+        ├── entrevaux.jpg
+        └── annot.jpg
+```
+
+---
+
 *📚 Documentation technique - Post-it Notes v1.0*  
-*Développé avec ❤️ pour Verdon Tourisme*
+*Développé avec ❤️ pour Verdon Tourisme*  
+*Dernière mise à jour : Juillet 2025*
