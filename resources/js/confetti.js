@@ -17,8 +17,8 @@ function launchConfetti() {
     
     document.body.appendChild(confettiContainer);
     
-    // Colors for confetti (green theme for success)
-    const colors = ['#10b981', '#22c55e', '#16a34a', '#15803d', '#84cc16', '#65a30d', '#a3e635'];
+    // Colors for confetti (teal theme for success)
+    const colors = ['#3B9C92', '#2d7a72', '#4db5a8', '#5cc7ba', '#6dd9cc', '#7eebde', '#8ffdf0'];
     
     // Create confetti pieces
     for (let i = 0; i < 80; i++) {

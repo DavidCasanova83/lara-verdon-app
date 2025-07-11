@@ -5,7 +5,7 @@
         
         <!-- Navigation -->
         <div class="flex justify-between items-center mb-6">
-            <a href="{{ route('form.step2', $city) }}" class="text-green-600 hover:text-green-800 flex items-center font-medium transition-colors">
+            <a href="{{ route('form.step2', $city) }}" class="flex items-center font-medium transition-colors" style="color: #3B9C92;" onmouseover="this.style.color='#2d7a72'" onmouseout="this.style.color='#3B9C92'">
                 <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
                 </svg>
@@ -36,14 +36,14 @@
                             @foreach($specificOptions as $option)
                                 <x-selection-button 
                                     type="button"
-                                    wire:click="toggleSpecificRequest('{{ $option }}')"
+                                    wire:click="toggleSpecificRequest({{ json_encode($option) }})"
                                     :selected="in_array($option, $specificRequests)">
                                     {{ $option }}
                                 </x-selection-button>
                             @endforeach
                         </div>
                         @if(count($specificRequests) > 0)
-                            <div class="text-sm text-green-600 mt-2 flex items-center">
+                            <div class="text-sm mt-2 flex items-center" style="color: #3B9C92;">
                                 <svg class="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
                                     <path d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"/>
                                 </svg>
@@ -61,7 +61,7 @@
                         @foreach($generalOptions as $option)
                             <x-selection-button 
                                 type="button"
-                                wire:click="toggleGeneralRequest('{{ $option }}')"
+                                wire:click="toggleGeneralRequest({{ json_encode($option) }})"
                                 :selected="in_array($option, $generalRequests)"
                                 class="text-left justify-start">
                                 {{ $option }}
@@ -69,7 +69,7 @@
                         @endforeach
                     </div>
                     @if(count($generalRequests) > 0)
-                        <div class="text-sm text-green-600 mt-2 flex items-center">
+                        <div class="text-sm mt-2 flex items-center" style="color: #3B9C92;">
                             <svg class="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
                                 <path d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"/>
                             </svg>
@@ -132,13 +132,16 @@
                 <!-- Actions -->
                 <div class="flex justify-between items-center pt-6 border-t border-gray-200">
                     <div class="flex items-center text-sm text-gray-500">
-                        <svg class="w-4 h-4 mr-2 text-green-600" fill="currentColor" viewBox="0 0 20 20">
+                        <svg class="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20" style="color: #3B9C92;">
                             <path d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"/>
                         </svg>
                         Sauvegardé automatiquement
                     </div>
                     <button type="submit"
-                            class="bg-green-600 hover:bg-green-700 text-white font-bold py-3 px-8 rounded-lg text-lg transition-all duration-200 transform hover:scale-105 focus:ring-2 focus:ring-green-500 focus:outline-none flex items-center"
+                            class="text-white font-bold py-3 px-8 rounded-lg text-lg transition-all duration-200 transform hover:scale-105 focus:ring-2 focus:outline-none flex items-center"
+                            style="background-color: #3B9C92; box-shadow: 0 0 0 2px #3B9C92;"
+                            onmouseover="this.style.backgroundColor='#2d7a72'"
+                            onmouseout="this.style.backgroundColor='#3B9C92'"
                             wire:loading.attr="disabled"
                             wire:loading.class="opacity-50 cursor-not-allowed">
                         <span wire:loading.remove>Envoyer le formulaire</span>
