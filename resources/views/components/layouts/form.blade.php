@@ -10,12 +10,12 @@
 </head>
 
 <body class="bg-gray-100 text-gray-900 font-atkinson">
-    <header class="bg-white shadow-sm">
+    {{-- <header class="bg-white shadow-sm">
         <div class="container mx-auto px-4 py-2">
             <div class="flex justify-between items-center">
                 <h1 class="text-xl font-bold">
                     <a href="{{ route('home') }}" class="text-primary-600 hover:text-primary-700">
-                        Verdon Tourisme
+                        Verdon TOUT
                     </a>
                 </h1>
 
@@ -95,7 +95,7 @@
                 </nav>
             </div>
         </div>
-    </header>
+    </header> --}}
 
     <main class="min-h-screen">
         @if (session('success'))
@@ -121,18 +121,18 @@
     @livewire('post-it-notes')
 
     @livewireScripts
-    
+
     <script>
         function headerNav() {
             return {
                 statsMenuOpen: false,
                 userMenuOpen: false,
-                
+
                 toggleStatsMenu() {
                     this.statsMenuOpen = !this.statsMenuOpen;
                     this.userMenuOpen = false;
                 },
-                
+
                 toggleUserMenu() {
                     this.userMenuOpen = !this.userMenuOpen;
                     this.statsMenuOpen = false;

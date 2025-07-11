@@ -18,7 +18,7 @@ Le système de post-it intégré permet aux utilisateurs de l'application de pre
 - ✅ **Design authentique** post-it jaune avec coin replié
 - ✅ **Animations fluides** - rotation au survol, transitions
 - ✅ **Mode réduit/étendu** - minimisation pour libérer l'espace
-- ✅ **Glisser-déposer** - repositionnement libre sur l'écran
+- ✅ **Position fixe** - placement optimisé en bas à droite
 
 ### 🔧 **Fonctionnalités avancées**
 - ✅ **Redimensionnement automatique** - s'adapte au contenu
@@ -41,10 +41,10 @@ Le système de post-it intégré permet aux utilisateurs de l'application de pre
 - **Agrandir** : Cliquez sur le bouton circulaire jaune
 - **Raccourci** : Ctrl/Cmd + Shift + N
 
-### **Déplacer le post-it**
-1. Cliquez et maintenez sur la barre de titre (📝 Notes Verdon Tourisme)
-2. Glissez vers la position souhaitée
-3. Relâchez - la position est sauvegardée automatiquement
+### **Position du post-it**
+- Le post-it est **fixé en bas à droite** de l'écran
+- Position optimisée pour ne pas gêner la navigation
+- Toujours accessible sans masquer le contenu principal
 
 ### **Effacer les notes**
 - Cliquez sur l'icône 🗑️ dans le post-it
@@ -123,7 +123,7 @@ Le système de post-it intégré permet aux utilisateurs de l'application de pre
 ### **Expérience utilisateur**
 - ✅ **Toujours accessible** - ne gêne pas la navigation
 - ✅ **Interface familière** - design post-it reconnaissable
-- ✅ **Flexible** - déplaçable selon les préférences
+- ✅ **Position optimisée** - placé stratégiquement
 - ✅ **Discret** - se réduit quand non utilisé
 
 ---
@@ -177,9 +177,9 @@ Le post-it peut être facilement personnalisé :
 - Actualiser la page (F5)
 - Vérifier que JavaScript est activé
 
-### **Position incorrecte**
-- Effacer les données de position : localStorage.removeItem('postit_position')
-- Actualiser la page
+### **Problème d'affichage**
+- Actualiser la page (F5)
+- Vider le cache du navigateur si nécessaire
 
 ### **Raccourci clavier ne fonctionne pas**
 - S'assurer que le focus est sur la page (pas dans un iframe)

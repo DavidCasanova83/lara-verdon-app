@@ -8,7 +8,7 @@
             <div class="flex flex-wrap justify-start gap-2 md:gap-4 mb-4">
                 @foreach($profiles as $profileOption)
                     <button type="button"
-                            wire:click="$set('profile', '{{ $profileOption }}')"
+                            wire:click="$set('profile', {{ json_encode($profileOption) }})"
                             class="selection-button {{ $profileOption === $profile ? 'selected' : '' }}"
                             {{ $profileUnknown ? 'disabled' : '' }}>
                         {{ $profileOption }}

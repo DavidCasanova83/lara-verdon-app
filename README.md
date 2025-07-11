@@ -1,14 +1,16 @@
 # 🗺️ Application Formulaire Touristique - Verdon Tourisme
 
-Application web de collecte de données touristiques pour les bureaux d'information de Verdon Tourisme. Développée avec Laravel 12 + Livewire 3, elle remplace l'application Astro originale tout en conservant toutes les fonctionnalités.
+Application web complète de collecte de données touristiques pour les bureaux d'information de Verdon Tourisme. Développée avec Laravel 12 + Livewire 3 + Alpine.js, elle remplace l'application Astro originale en ajoutant un système d'authentification, des statistiques avancées et des outils de productivité.
 
 ## 📋 Description
 
 Cette application permet aux visiteurs des 5 bureaux d'information touristique de remplir un questionnaire en 3 étapes pour collecter :
 - **Données démographiques** (pays, département, email, profil, âge)
-- **Consentements RGPD** (newsletter, traitement des données)
+- **Consentements RGPD** (newsletter optionnelle, traitement des données)
 - **Demandes spécifiques** par ville et demandes générales
-- **Statistiques** avec visualisations graphiques
+- **Statistiques multi-niveaux** avec visualisations interactives
+- **Authentification** pour accès aux données par ville
+- **Outils de productivité** (post-it notes persistantes)
 
 ### 🏛️ Villes couvertes
 - **La Palud-sur-Verdon**
@@ -90,15 +92,18 @@ php artisan queue:listen
 ### Frontend
 - **Tailwind CSS 4.0** - Framework CSS utility-first
 - **Chart.js** - Graphiques pour les statistiques
+- **Alpine.js** - Interactions JavaScript légères
 - **Police Atkinson** - Typographie officielle
-- **Alpine.js** - Interactions JavaScript légères (via Livewire)
 
-### Fonctionnalités
+### Fonctionnalités avancées
+- **Authentification complète** avec Laravel Breeze
+- **Statistiques multi-niveaux** (globales, avancées, par ville)
+- **Post-it notes** persistantes avec localStorage
+- **Export CSV** des données avec filtres
 - **Session persistante** entre les étapes du formulaire
 - **Validation temps réel** avec Livewire
 - **Responsive design** mobile-first
-- **Statistiques interactives** avec graphiques
-- **RGPD compliant** avec consentements
+- **RGPD compliant** avec consentements optionnels
 
 ---
 
@@ -111,8 +116,8 @@ php artisan queue:listen
 ### 2. Formulaire - Étape 1
 - Sélectionnez le pays de résidence
 - Si France : précisez le département (ou "Inconnu")
-- Saisissez l'email de contact
-- Acceptez les consentements RGPD
+- Saisissez l'email de contact (optionnel)
+- Consentements RGPD (newsletter et traitement, optionnels)
 
 ### 3. Formulaire - Étape 2  
 - Choisissez le profil du visiteur
@@ -125,10 +130,12 @@ php artisan queue:listen
 - Ajoutez d'autres demandes en texte libre
 - Soumettez le formulaire
 
-### 5. Statistiques
-- Accès via le lien en page d'accueil
-- Graphiques interactifs par ville, profil, département, etc.
-- Données en temps réel
+### 5. Statistiques et Authentification
+- **Statistiques de base** : Accès libre via page d'accueil
+- **Statistiques avancées** : `/statistiques-avancees` avec filtres et export CSV
+- **Statistiques par ville** : Accès protégé, connexion requise
+- **Post-it notes** : Outil de prise de notes disponible partout
+- **Authentification** : Boutons connexion/inscription dans le header
 
 ---
 
@@ -144,7 +151,10 @@ app/
 │   ├── FormStep1.php             # Étape 1: Infos générales
 │   ├── FormStep2.php             # Étape 2: Profil visiteur  
 │   ├── FormStep3.php             # Étape 3: Demandes
-│   └── Statistics.php            # Affichage statistiques
+│   ├── Statistics.php            # Statistiques de base
+│   ├── AdvancedStatistics.php    # Statistiques avancées
+│   ├── CityStatistics.php        # Statistiques par ville (protégées)
+│   └── PostItNotes.php           # Système de notes persistantes
 ├── Models/
 │   ├── City.php                  # Modèle des villes
 │   └── FormSubmission.php        # Modèle des soumissions
@@ -222,31 +232,43 @@ php artisan db:seed --class=CitiesSeeder
 
 ## 📊 Statistiques et Analytics
 
-### Graphiques disponibles
-- **Répartition par ville** (barres)
-- **Répartition par profil** (secteurs) 
-- **Répartition par département** (barres)
-- **Répartition par tranche d'âge** (secteurs)
-- **Demandes spécifiques** (barres)
-- **Demandes générales** (barres)
+### 3 Niveaux de statistiques
+
+#### Statistiques de base (accès libre)
+- Compteurs basiques avec graphiques Chart.js
+
+#### Statistiques avancées (accès libre)
+- **Filtres** : période, ville, pays, département
+- **Export CSV** des données filtrées  
+- **6 graphiques** : évolution, villes, pays, âges, demandes, départements
+- **Métriques temps réel** : aujourd'hui, semaine, mois
+
+#### Statistiques par ville (accès protégé)
+- **Authentification requise** pour accès
+- **Pages dédiées** par bureau d'information
+- **Analyse ciblée** des données de chaque ville
+- **Export CSV** spécifique à la ville
 
 ### Accès aux données
-Les données sont stockées en base SQLite et accessibles via :
-- Interface graphique des statistiques
-- Modèles Eloquent pour développement custom
-- Possibilité d'export futur (CSV, Excel)
+- **Interface graphique** multi-niveaux
+- **Export CSV** avec filtres personnalisés
+- **Modèles Eloquent** pour développement custom
+- **Protection** des données sensibles par authentification
 
 ---
 
 ## 🔒 Sécurité et RGPD
 
 ### Conformité RGPD
-- ✅ **Consentement explicite** pour newsletter
-- ✅ **Consentement obligatoire** pour traitement des données
+- ✅ **Consentement explicite** pour newsletter (optionnel)
+- ✅ **Consentement optionnel** pour traitement des données
 - ✅ **Information claire** sur l'utilisation des données
 - ✅ **Possibilité de refus** de la newsletter
+- ✅ **Email optionnel** - non obligatoire pour validation
 
 ### Sécurité technique
+- ✅ **Authentification Laravel Breeze** pour pages protégées
+- ✅ **Middleware de protection** sur routes sensibles
 - ✅ **Protection CSRF** sur tous les formulaires
 - ✅ **Validation côté serveur** avec Laravel
 - ✅ **Sanitization** automatique des entrées
@@ -347,7 +369,10 @@ php artisan test --coverage
 
 ### Fichiers de documentation
 - **CLAUDE.md** - Guide pour développeurs Claude Code
-- **RECAP_DEVELOPPEMENT.md** - Récapitulatif complet et suggestions d'améliorations
+- **RECAP_DEVELOPPEMENT.md** - Récapitulatif complet du développement
+- **NOUVELLES_FONCTIONNALITES.md** - Documentation des dernières fonctionnalités
+- **POST_IT_GUIDE.md** - Guide d'utilisation du système post-it
+- **POST_IT_TECHNICAL_DOC.md** - Documentation technique détaillée post-it
 - **ANALYSE_APPLICATION_ASTRO.md** - Spécifications originales Astro
 
 ### Ressources utiles

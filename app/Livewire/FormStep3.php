@@ -16,7 +16,7 @@ class FormStep3 extends Component
     public function mount($city)
     {
         $this->city = $city;
-        
+
         // Récupérer les données de session
         $sessionData = session('form_data', []);
         if (!empty($sessionData)) {
@@ -70,14 +70,14 @@ class FormStep3 extends Component
         // Nettoyer la session
         session()->forget('form_data');
 
-        session()->flash('success', 'Merci ! Votre formulaire a été enregistré avec succès.');
+        session()->flash('success', '🎉 Merci ! Votre formulaire a été enregistré avec succès. 🎉');
         return redirect()->route('form.step1', $this->city);
     }
 
     public function render()
     {
         $formOptionsService = app(FormOptionsService::class);
-        
+
         return view('livewire.form-step3', [
             'specificOptions' => $formOptionsService->getSpecificOptions($this->city),
             'generalOptions' => $formOptionsService->getGeneralOptions()

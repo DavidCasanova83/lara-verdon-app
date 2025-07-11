@@ -14,6 +14,16 @@ Route::get('/{city}/form1', [FormController::class, 'step1'])->name('form.step1'
 Route::get('/{city}/form2', [FormController::class, 'step2'])->name('form.step2');
 Route::get('/{city}/form3', [FormController::class, 'step3'])->name('form.step3');
 Route::get('/statistiques', [StatisticsController::class, 'index'])->name('statistics');
+Route::get('/statistiques-avancees', function() {
+    return view('pages.advanced-statistics');
+})->name('advanced-statistics');
+
+// Routes protégées pour les statistiques par ville
+Route::middleware(['auth'])->group(function () {
+    Route::get('/stats-ville/{city}', function($city) {
+        return view('pages.city-statistics', ['citySlug' => $city]);
+    })->name('city-stats');
+});
 
 // Original Laravel routes
 Route::view('dashboard', 'dashboard')
