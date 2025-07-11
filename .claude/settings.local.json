@@ -14,7 +14,8 @@
       "Bash(php:*)",
       "Bash(rm:*)",
       "Bash(true)",
-      "Bash(chmod:*)"
+      "Bash(chmod:*)",
+      "WebFetch(domain:images.unsplash.com)"
     ],
     "deny": []
   }

@@ -86,7 +86,7 @@ class FormStep1 extends Component
             ]]);
 
             \Log::info('FormStep1: Validation passed, redirecting to step2');
-            return redirect()->route('form.step2', $this->city);
+            return $this->redirectRoute('form.step2', $this->city);
             
         } catch (\Exception $e) {
             \Log::error('FormStep1 Error: ' . $e->getMessage());

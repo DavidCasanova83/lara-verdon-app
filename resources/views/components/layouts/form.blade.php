@@ -98,13 +98,6 @@
     </header> --}}
 
     <main class="min-h-screen">
-        @if (session('success'))
-            <div class="container mx-auto px-4 pt-4">
-                <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded mb-4">
-                    {{ session('success') }}
-                </div>
-            </div>
-        @endif
 
         @if (session('error'))
             <div class="container mx-auto px-4 pt-4">
