@@ -45,6 +45,15 @@ class FormStep2 extends Component
         }
     }
 
+    public function toggleAgeGroup($ageOption)
+    {
+        if (in_array($ageOption, $this->ageGroups)) {
+            $this->ageGroups = array_values(array_diff($this->ageGroups, [$ageOption]));
+        } else {
+            $this->ageGroups = array_merge($this->ageGroups, [$ageOption]);
+        }
+    }
+
     public function nextStep()
     {
         $this->validate([
@@ -67,7 +76,7 @@ class FormStep2 extends Component
             ]
         )]);
 
-        return redirect()->route('form.step3', $this->city);
+        return $this->redirectRoute('form.step3', $this->city);
     }
 
     public function render()

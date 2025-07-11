@@ -26,6 +26,24 @@ class FormStep3 extends Component
         }
     }
 
+    public function toggleSpecificRequest($option)
+    {
+        if (in_array($option, $this->specificRequests)) {
+            $this->specificRequests = array_values(array_diff($this->specificRequests, [$option]));
+        } else {
+            $this->specificRequests = array_merge($this->specificRequests, [$option]);
+        }
+    }
+
+    public function toggleGeneralRequest($option)
+    {
+        if (in_array($option, $this->generalRequests)) {
+            $this->generalRequests = array_values(array_diff($this->generalRequests, [$option]));
+        } else {
+            $this->generalRequests = array_merge($this->generalRequests, [$option]);
+        }
+    }
+
     public function submit()
     {
         $this->validate([
@@ -71,7 +89,7 @@ class FormStep3 extends Component
         session()->forget('form_data');
 
         session()->flash('success', '🎉 Merci ! Votre formulaire a été enregistré avec succès. 🎉');
-        return redirect()->route('form.step1', $this->city);
+        return $this->redirectRoute('form.step1', $this->city);
     }
 
     public function render()
